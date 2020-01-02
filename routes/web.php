@@ -38,4 +38,6 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 
+Route::get('image/{filename}', 'CustomersController@displayImage')->name('image.displayImage');
+
 ?>

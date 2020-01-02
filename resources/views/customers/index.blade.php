@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+
 @section('title')
     Customer List
 @endsection
@@ -12,6 +13,7 @@
         </div>
     </div>
 
+    {{--
     @foreach ($customers as $customer)
         <div class="row">
             <div class="col-2">
@@ -20,10 +22,19 @@
             <div class="col-4"><a href="{{ route('customers.show', ['customer' => $customer]) }} ">{{ $customer->name }}</a></div>
             <div class="col-4">{{ $customer->company->name }}</div>
             <div class="col-2">{{ $customer->active }}</div>
-        </div>        
+        </div>
     @endforeach
-
+    --}}
+    <table class="table table-bordered table-striped table-hover">
+        <caption>List of Customers</caption>
+        @foreach($customers as $customer)
+                <tr style="text-align: center;">
+                    <td>{{ $customer->id }}</td>
+                    <td><a href="{{ route('customers.show', ['customer' => $customer]) }} ">{{ $customer->name }}</a></td>
+                    <td>{{ $customer->company->name }}</td>
+                    <td style="width: 20%;">{{ $customer->active }}</td>
+                </tr>
+        @endforeach
+    </table>
     <br>
-    <hr>
-
 @endsection

@@ -25,6 +25,12 @@
             <input type="text" name="phone" value="{{ old('phone') }}" class="form-control">
             <div>{{ $errors->first('phone') }}</div>
         </div>
+        <div class="form-group">
+            <label for="email" name="contact_email">Contact email</label>
+            <input type="text" name="contact_email" value="{{ old('contact_email') }}" class="form-control">
+            <div>{{ $errors->first('contact_email') }} </div>
+        </div>
+
 
         <button type="submit" class="btn btn-primary">Add company</button>
         @csrf

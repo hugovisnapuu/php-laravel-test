@@ -23,7 +23,7 @@ class CustomersController extends Controller
 
         $customers = Customer::all();
         $companies = Company::all();
-        
+
         return view('customers.index', compact('customers', 'companies'));
 
 
@@ -40,10 +40,12 @@ class CustomersController extends Controller
         return view('customers.create', compact('companies', 'customer'));
     }
 
-    public function store() 
+    public function store()
     {
 
         $customer = Customer::create($this->validateRequest());
+
+        $this->storeImage($customer);
 
         event(new NewCustomerHasRegisteredEvent($customer));
 
@@ -52,8 +54,8 @@ class CustomersController extends Controller
         return redirect('customers');
     }
 
-    
-    public function show(Customer $customer) 
+
+    public function show(Customer $customer)
     {
         $company = Company::all();
 
@@ -61,17 +63,23 @@ class CustomersController extends Controller
 
     }
 
-    public function edit(Customer $customer) 
+    public function edit(Customer $customer)
     {
         $companies = Company::all();
 
-        return view('customers.edit', compact('customer', 'companies'));    
+        return view('customers.edit', compact('customer', 'companies'));
     }
 
     public function update(Customer $customer)
     {
 
         $customer->update($this->validateRequest());
+
+        $this->storeImage($customer);
+
+        $filename = request()->image->hashName();
+
+        $this->displayImage($filename);
 
         return redirect('customers/'.$customer->id/*, 302, compact('companies')*/)->with('message', 'Your data has been updated');
     }
@@ -83,14 +91,48 @@ class CustomersController extends Controller
         return redirect('customers');
     }
 
+    public function displayImage($filename)
+    {
+        $path = storage_path('uploads' . $filename);
+
+        if (!File::exists($path)) {
+            abort(404);
+        }
+
+        $file = File::get($path);
+        $type = File::mimetype($path);
+
+        $response = Response::make($file, 200);
+        $response->header("Content-type", $type);
+
+        return $response;
+    }
+
     private function validateRequest()
     {
-        return request()->validate([
+        return tap(request()->validate([
             'name' => 'required|min:3',
             'email' => 'required|email',
             'number' => 'required|integer|min:6',
             'active' => 'required',
-            'company_id' => 'required'
-        ]);        
+            'company_id' => 'required',
+
+        ]), function () {
+
+            if (request()->hasFile('image')) {
+                request()->validate([
+                    'image' => 'file|image|max:5000',
+                ]);
+            }
+        });
+    }
+
+    private function storeImage($customer)
+    {
+        if (request()->has('image')) {
+            $customer->update([
+                'image' => request()->image->store('uploads', 'public')
+            ]);
+        }
     }
 }

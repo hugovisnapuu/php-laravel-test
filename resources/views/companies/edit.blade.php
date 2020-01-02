@@ -15,7 +15,7 @@
     <div class="col-12">
         <form action="{{ route('companies.update', ['company' => $company]) }}" method="POST" style="max-width:50%;">
             @method('PATCH')
-            
+
             <div class="form-group">
                 <label for="name">Company name</label>
                 <input type="text" name="name" value="{{ old('name') ?? $company->name }}" class="form-control">
@@ -26,13 +26,18 @@
                 <input type="text" name="phone" value="{{ old('phone') ?? $company->phone }}" class="form-control">
                 <div>{{ $errors->first('phone') }}</div>
             </div>
+            <div class="form-group">
+                <label for="email" name="contact_email">Company contact email</label>
+                <input type="text" name="contact_email" value="{{ old('contact_email') ?? $company->contact_email }}" class="form-control">
+                <div>{{ $errors->first('contact_email') }}</div>
+            </div>
 
             <button type="submit" value="reset" class="btn btn-primary ">
                 Save changes
-            </button> 
-            @csrf              
+            </button>
+            @csrf
         </form>
     </div>
 </div>
-    
+
 @endsection

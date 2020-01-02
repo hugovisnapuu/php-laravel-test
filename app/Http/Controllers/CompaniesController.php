@@ -22,28 +22,28 @@ class CompaniesController extends Controller
     public function index()
     {
         $companies = Company::all();
-        
+
         return view('companies.index', compact('companies'));
     }
 
     public function create()
     {
         $company = new Company();
-        
+
         return view('companies.create', compact('company'));
     }
 
 
     public function store()
     {
-        $company = Company::create($this->Validaterequest());
-        
+        $company = Company::create($this->validaterequest());
+
         return redirect('companies');
     }
 
     public function show(Company $company)
     {
-        
+
         return view('companies.show', compact('company'));
     }
 
@@ -56,7 +56,7 @@ class CompaniesController extends Controller
 
     public function update(Company $company)
     {
-        $company->update($this->Validaterequest());
+        $company->update($this->validaterequest());
 
         return redirect('companies/'. $company->id)->with('message', 'Your data has been updated');
     }
@@ -68,11 +68,12 @@ class CompaniesController extends Controller
         return redirect('companies');
     }
 
-    private function Validaterequest()
+    private function validaterequest()
     {
         return request()->validate([
             'name' => 'required',
-            'phone' => 'required'
+            'phone' => 'required',
+            'contact_email' => 'required',
         ]);
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') 
+@section('title')
     Details for {{ $company->name }}
 @endsection
 
@@ -20,11 +20,11 @@
     <div class="row">
         <div class="col-12">
             <p><strong>Name: </strong>{{$company->name}}</p>
-            {{--<p><strong>Email: </strong>{{$company->email}}</p>--}}
+            <p><strong>Email: </strong>{{$company->contact_email}}</p>
             <p><strong>Phone number: </strong>{{$company->phone}}</p>
         </div>
     </div>
-    
+
     <div>
         <a href="{{ route('companies.edit', ['company' => $company]) }}">
             Edit company data
@@ -34,4 +34,4 @@
     <div>
         <a href="{{ route('companies.index') }}">Back to Companies List</a>
     </div>
-@endsection 
+@endsection
