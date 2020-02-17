@@ -48,7 +48,7 @@ class CustomersController extends Controller
 
         $customer = Customer::create($this->validateRequest());
 
-        event(new NewCustomerHasRegisteredEvent($customer));
+//        event(new NewCustomerHasRegisteredEvent($customer));
 
         Mail::to($customer->email)->send(new WelcomeNewUserMail());
 
@@ -111,15 +111,30 @@ class CustomersController extends Controller
     public function storeImage($customer)
     {
         if (request()->hasFile('image')) {
+            $date         = now();
+            $file_name    = md5(md5_file(request()->image) . $date) . '.' . request()->image->guessExtension();
+            $derived_path = substr($file_name, 0, 2) . '/' . substr($file_name, 2, 2);
+            $path         = implode('/', ['customers', $derived_path]);
+            $full_path    = Storage::putFileAs($path, request()->image, $file_name);
+            info('Stored a file...', ['file' => $full_path]);
 
             $customer->update([
-                //'image' => request()->image->store(public_path('uploads'), $filename)
-                'image' => request()->image->store('uploads', 'public')
+                'image' => $file_name
             ]);
-
         }
+    }
 
+    public function getImage($filename)
+    {
+        return Storage::download($this->getFilePath($filename));
+    }
 
+    public function getFilePath($filename): string
+    {
+        $derived_path = substr($filename, 0, 2) . '/' . substr($filename, 2, 2);
+        $path         = implode('/', ['customers', $derived_path, $filename]);
+
+        return $path;
     }
 
     /*public function displayImage($filename)
