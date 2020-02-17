@@ -18,13 +18,13 @@ class Customer extends Model
 
     public function getActiveAttribute($attribute)
     {
-        return $this->activeOptions()[$attribute];  
+        return $this->activeOptions()[$attribute];
     }
 
     //süntaks - public function scope + scope'i nimi SUURE tähega
     public function scopeActive($query)
     {
-        return $query->where('active', 1);   
+        return $query->where('active', 1);
     }
 
     public function scopeInactive($query)

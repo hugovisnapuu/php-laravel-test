@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 use App\Customer;
 use App\Email;
 use App\Company;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeNewUserMail;
 use App\Events\NewCustomerHasRegisteredEvent;
 use App\Http\Controllers\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CustomersController extends Controller
 {
@@ -45,15 +48,12 @@ class CustomersController extends Controller
 
         $customer = Customer::create($this->validateRequest());
 
-        $this->storeImage($customer);
-
         event(new NewCustomerHasRegisteredEvent($customer));
 
         Mail::to($customer->email)->send(new WelcomeNewUserMail());
 
         return redirect('customers');
     }
-
 
     public function show(Customer $customer)
     {
@@ -70,18 +70,16 @@ class CustomersController extends Controller
         return view('customers.edit', compact('customer', 'companies'));
     }
 
-    public function update(Customer $customer)
+    public function update(Customer $customer, Request $request)
     {
 
         $customer->update($this->validateRequest());
 
         $this->storeImage($customer);
 
-        $filename = request()->image->hashName();
+        //$this->displayImage();
 
-        $this->displayImage($filename);
-
-        return redirect('customers/'.$customer->id/*, 302, compact('companies')*/)->with('message', 'Your data has been updated');
+        return redirect('customers/'.$customer->id)->with('message', 'Your data has been updated');
     }
 
     public function destroy(Customer $customer)
@@ -89,23 +87,6 @@ class CustomersController extends Controller
         $customer->delete();
 
         return redirect('customers');
-    }
-
-    public function displayImage($filename)
-    {
-        $path = storage_path('uploads' . $filename);
-
-        if (!File::exists($path)) {
-            abort(404);
-        }
-
-        $file = File::get($path);
-        $type = File::mimetype($path);
-
-        $response = Response::make($file, 200);
-        $response->header("Content-type", $type);
-
-        return $response;
     }
 
     private function validateRequest()
@@ -127,12 +108,36 @@ class CustomersController extends Controller
         });
     }
 
-    private function storeImage($customer)
+    public function storeImage($customer)
     {
-        if (request()->has('image')) {
+        if (request()->hasFile('image')) {
+
             $customer->update([
+                //'image' => request()->image->store(public_path('uploads'), $filename)
                 'image' => request()->image->store('uploads', 'public')
             ]);
+
         }
+
+
     }
+
+    /*public function displayImage($filename)
+    {
+        //$filename = request()->$customer->image->hashName();
+
+        return response();
+    }*/
+
+
+
+
+    //public function storeImage($customer)
+    //{
+    //    if (request()->has('image')) {
+    //        $customer->update([
+    //            'image' => request()->image->store('uploads', 'public')
+    //        ]);
+    //    }
+    //}
 }

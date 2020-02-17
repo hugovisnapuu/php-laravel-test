@@ -16,6 +16,6 @@ class RegisterCustomerToNewsletter
      */
     public function handle(NewCustomerHasRegisteredEvent $event)
     {
-        dump('Registered to newletter');
+        dump('Registered to newsletter');
     }
 }

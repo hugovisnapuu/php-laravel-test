@@ -20,6 +20,18 @@ Route::post('contact', 'ContactFormController@store')->name('contact.store');
 
 Route::view('about', 'about')->middleware('test');
 
+Route::resource('customers', 'CustomersController');
+
+Route::resource('companies', 'CompaniesController');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
+
+//Route::get('image', 'ImageController@index');
+//Route::post('save', 'ImageController@save');
+
+Route::get('profile/{file}', 'CustomersController@storeImage');
 
 //Route::get('customers', 'CustomersController@index');
 //Route::get('customers/create', 'CustomersController@create');
@@ -28,16 +40,5 @@ Route::view('about', 'about')->middleware('test');
 //Route::get('customers/{customer}/edit', 'CustomersController@edit');
 //Route::patch('customers/{customer}', 'CustomersController@update');
 //Route::delete('customers/{customer}', 'CustomersController@destroy');
-
-Route::resource('customers', 'CustomersController');
-
-Route::resource('companies', 'CompaniesController');
-
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index');
-
-Route::get('image/{filename}', 'CustomersController@displayImage')->name('image.displayImage');
 
 ?>
