@@ -21,6 +21,8 @@ Route::post('contact', 'ContactFormController@store')->name('contact.store');
 Route::view('about', 'about')->middleware('test');
 
 Route::resource('customers', 'CustomersController');
+Route::get('customers/pictures/{filename}', 'CustomersController@getImage')->name('customers.picture');
+
 
 Route::resource('companies', 'CompaniesController');
 
@@ -30,8 +32,6 @@ Route::get('/home', 'HomeController@index');
 
 //Route::get('image', 'ImageController@index');
 //Route::post('save', 'ImageController@save');
-
-Route::get('profile/{file}', 'CustomersController@storeImage');
 
 //Route::get('customers', 'CustomersController@index');
 //Route::get('customers/create', 'CustomersController@create');

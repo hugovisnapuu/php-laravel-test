@@ -27,7 +27,7 @@
         </div>
         <div class="col-12">
             <div class="col-4">
-                {{--<img src="/uploads/images/{{ $customer->image }}" style="width:32px; height:32px;" alt="image">--}}
+                <img src="{{ route('customers.picture', ['filename' => $customer->image]) }}" style="width:32px; height:32px;" alt="image">
             </div>
         </div>
     </div>

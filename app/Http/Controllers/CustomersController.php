@@ -77,8 +77,6 @@ class CustomersController extends Controller
 
         $this->storeImage($customer);
 
-        //$this->displayImage();
-
         return redirect('customers/'.$customer->id)->with('message', 'Your data has been updated');
     }
 
@@ -112,32 +110,30 @@ class CustomersController extends Controller
     {
         if (request()->hasFile('image')) {
 
+            $date = time();
+            $file_name = md5(md5_file(request()->image).$date).'.'.request()->image->guessExtension();
+            $derived_path = substr($file_name,0,2) . '/' . substr($file_name, 2, 2);
+            $path = implode('/', ['Customers', $derived_path]);
+            $full_path = Storage::putFileAs($path, request()->image, $file_name);
+
             $customer->update([
-                //'image' => request()->image->store(public_path('uploads'), $filename)
-                'image' => request()->image->store('uploads', 'public')
+                'image' => $file_name
             ]);
-
         }
-
-
     }
 
-    /*public function displayImage($filename)
+    public function getImage($filename)
     {
-        //$filename = request()->$customer->image->hashName();
+        return Storage::download($this->getFilePath($filename));
+    }
 
-        return response();
-    }*/
+    public function getFilePath($filename): string
+    {
+        $derived_path = substr($filename,0,2) . '/' . substr($filename, 2, 2);
+        $path = implode('/', ['Customers', $derived_path, $filename]);
+
+        return $path;
+    }
 
 
-
-
-    //public function storeImage($customer)
-    //{
-    //    if (request()->has('image')) {
-    //        $customer->update([
-    //            'image' => request()->image->store('uploads', 'public')
-    //        ]);
-    //    }
-    //}
 }
