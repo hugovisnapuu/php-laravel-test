@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use App\Customer;
 use App\Email;
@@ -11,8 +12,10 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeNewUserMail;
 use App\Events\NewCustomerHasRegisteredEvent;
 use App\Http\Controllers\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class CustomersController extends Controller
 {
@@ -52,6 +55,8 @@ class CustomersController extends Controller
 
         Mail::to($customer->email)->send(new WelcomeNewUserMail());
 
+        $this->storeImage($customer);
+
         return redirect('customers');
     }
 
@@ -77,7 +82,7 @@ class CustomersController extends Controller
 
         $this->storeImage($customer);
 
-        return redirect('customers/'.$customer->id)->with('message', 'Your data has been updated');
+        return redirect('customers/' . $customer->id)->with('message', 'Your data has been updated');
     }
 
     public function destroy(Customer $customer)
@@ -111,8 +116,8 @@ class CustomersController extends Controller
         if (request()->hasFile('image')) {
 
             $date = time();
-            $file_name = md5(md5_file(request()->image).$date).'.'.request()->image->guessExtension();
-            $derived_path = substr($file_name,0,2) . '/' . substr($file_name, 2, 2);
+            $file_name = md5(md5_file(request()->image) . $date) . '.' . request()->image->guessExtension();
+            $derived_path = substr($file_name, 0, 2) . '/' . substr($file_name, 2, 2);
             $path = implode('/', ['Customers', $derived_path]);
             $full_path = Storage::putFileAs($path, request()->image, $file_name);
 
@@ -129,10 +134,20 @@ class CustomersController extends Controller
 
     public function getFilePath($filename): string
     {
-        $derived_path = substr($filename,0,2) . '/' . substr($filename, 2, 2);
+        $derived_path = substr($filename, 0, 2) . '/' . substr($filename, 2, 2);
         $path = implode('/', ['Customers', $derived_path, $filename]);
 
         return $path;
+    }
+
+    public function deleteImage()
+    {
+        //Nii kustutad ära kõik kellel on vähemalt 1 pilt andmebaasis
+        //DB::table('customers')->where('image', '>', 0)->delete();
+
+        Storage::delete();
+
+        return back();
     }
 
 

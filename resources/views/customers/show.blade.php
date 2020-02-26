@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <div class="row">
+    {{--<div class="row">
         <div class="col-12">
             <p><strong>Name: </strong>{{$customer->name}}</p>
             <p><strong>Email: </strong>{{$customer->email}}</p>
@@ -26,9 +26,34 @@
             <p><strong>Company name: </strong> {{ $customer->company->name }}</p>
         </div>
         <div class="col-12">
-            <div class="col-4">
-                <img src="{{ route('customers.picture', ['filename' => $customer->image]) }}" style="width:32px; height:32px;" alt="image">
+            <div class="col-12">
+                @if($customer->image != null)
+                    <img src="{{ route('customers.picture', ['filename' => $customer->image]) }}" style="width:50px; " alt="image">
+
+                @else
+                    <p>Profile image not selected</p>
+                @endif
             </div>
+        </div>
+    </div>--}}
+    <div class="row">
+        <div class="col-12">
+            <p><strong>Name: </strong>{{$customer->name}}</p>
+            <p><strong>Email: </strong>{{$customer->email}}</p>
+            <p><strong>Phone number: </strong>{{$customer->number}}</p>
+            <p><strong>Status: </strong>{{ $customer->active }}</p>
+            <p><strong>Company name: </strong> {{ $customer->company->name }}</p>
+                @if($customer->image != null)
+                    <img src="{{ route('customers.picture', ['filename' => $customer->image]) }}" style="width:50px; " alt="image">
+
+                    <form action="{{ route('customers.image.delete') }}" method="POST">
+                        @method('DELETE')
+                        @csrf
+                        <button class="btn btn-info my-2">Delete profile image</button>
+                    </form>
+                @else
+                    <p>Profile image not selected</p>
+                @endif
         </div>
     </div>
 
@@ -43,4 +68,5 @@
             Back to Customer list
         </a>
     </div>
+
 @endsection
