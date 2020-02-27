@@ -22,7 +22,7 @@ Route::view('about', 'about')->middleware('test');
 
 Route::resource('customers', 'CustomersController');
 Route::get('customers/pictures/{filename}', 'CustomersController@getImage')->name('customers.picture');
-Route::delete('customers/image/delete', 'CustomersController@deleteImage')->name('customers.image.delete');
+Route::delete('customers/{customer}/image/delete', 'CustomersController@deleteImage')->name('customers.image.delete');
 
 
 Route::resource('companies', 'CompaniesController');

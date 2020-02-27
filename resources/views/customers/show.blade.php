@@ -46,7 +46,7 @@
                 @if($customer->image != null)
                     <img src="{{ route('customers.picture', ['filename' => $customer->image]) }}" style="width:50px; " alt="image">
 
-                    <form action="{{ route('customers.image.delete') }}" method="POST">
+                    <form action="{{ route('customers.image.delete', ['customer' => $customer->id]) }}" method="POST">
                         @method('DELETE')
                         @csrf
                         <button class="btn btn-info my-2">Delete profile image</button>
