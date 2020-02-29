@@ -10,8 +10,8 @@ $factory->define(\App\Customer::class, function (Faker $faker) {
         'company_id' => factory(\App\Company::class)->create(),
         'name' => $faker->name,
         'email' => $faker->unique()->email,
-        'number' => $faker->phoneNumber,
-        //'number' => $faker->numerify('########'),
+        //'number' => $faker->phoneNumber,
+        'number' => $faker->numerify('########'),
         'active' => 1
     ];
 });

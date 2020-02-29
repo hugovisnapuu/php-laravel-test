@@ -97,7 +97,7 @@ class CustomersController extends Controller
         return tap(request()->validate([
             'name' => 'required|min:3',
             'email' => 'required|email',
-            'number' => 'required|integer|min:6',
+            'number' => 'required|min:6',
             'active' => 'required',
             'company_id' => 'required',
 
@@ -118,7 +118,7 @@ class CustomersController extends Controller
             $date = time();
             $file_name = md5(md5_file(request()->image) . $date) . '.' . request()->image->guessExtension();
             $derived_path = substr($file_name, 0, 2) . '/' . substr($file_name, 2, 2);
-            $path = implode('/', ['Customers', $derived_path]);
+            $path = implode('/', ['customers', $derived_path]);
             $full_path = Storage::putFileAs($path, request()->image, $file_name);
 
             $customer->update([
@@ -135,13 +135,14 @@ class CustomersController extends Controller
     public function getFilePath($filename): string
     {
         $derived_path = substr($filename, 0, 2) . '/' . substr($filename, 2, 2);
-        $path = implode('/', ['Customers', $derived_path, $filename]);
+        $path = implode('/', ['customers', $derived_path, $filename]);
 
         return $path;
     }
 
     public function deleteImage(Request $request, Customer $customer)
     {
+
         //Nii kustutad ära kõik kellel on vähemalt 1 pilt andmebaasis
         //DB::table('customers')->where('image', '>', 0)->delete();
 
@@ -149,12 +150,13 @@ class CustomersController extends Controller
 
         $image_directory = substr($image_name, 0, 2);
 
-        $customer->update([
-            'image' => null
+        $saved = $customer->update([
+           'image' => null
         ]);
 
-        //Storage::delete($this->getFilePath($image_name));
-        Storage::deleteDirectory('Customers'. '/' . $image_directory);
+        if ($saved) {
+            Storage::deleteDirectory('Customers'. '/' . $image_directory);
+        }
 
         return back()->with('message', 'Your profile image has been deleted');
     }
