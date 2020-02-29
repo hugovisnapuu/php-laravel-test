@@ -11,6 +11,7 @@ $factory->define(\App\Customer::class, function (Faker $faker) {
         'name' => $faker->name,
         'email' => $faker->unique()->email,
         'number' => $faker->phoneNumber,
+        //'number' => $faker->numerify('########'),
         'active' => 1
     ];
 });

@@ -140,14 +140,23 @@ class CustomersController extends Controller
         return $path;
     }
 
-    public function deleteImage()
+    public function deleteImage(Request $request, Customer $customer)
     {
         //Nii kustutad ära kõik kellel on vähemalt 1 pilt andmebaasis
         //DB::table('customers')->where('image', '>', 0)->delete();
 
-        Storage::delete();
+        $image_name = $customer->image;
 
-        return back();
+        $image_directory = substr($image_name, 0, 2);
+
+        $customer->update([
+            'image' => null
+        ]);
+
+        //Storage::delete($this->getFilePath($image_name));
+        Storage::deleteDirectory('Customers'. '/' . $image_directory);
+
+        return back()->with('message', 'Your profile image has been deleted');
     }
 
 
